@@ -61,5 +61,4 @@ if __name__ == "__main__":
     summary_row = run_benchmarked_query(MODEL, TEST_PROMPT)
     
     if summary_row:
-        print("\n📋 Copy this row into your README.md table:")
         print(summary_row)
