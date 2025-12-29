@@ -38,8 +38,8 @@ def run_benchmarked_query(model_name, prompt):
 
         # PRINT RESULTS
         print(f"AI Response Received ({tokens} tokens)")
-        print(f Inference Time: {duration:.2f} seconds")
-        print(f Speed: {tps:.2f} tokens/sec")
+        print(f"Inference Time: {duration:.2f} seconds")
+        print(f"Speed: {tps:.2f} tokens/sec")
         print(f"GPU Energy: {gpu_j:.2f} J")
         print(f"Total Energy: {total_j:.2f} J")
         print(f"Efficiency: {joules_per_token:.4f} Joules/Token")
