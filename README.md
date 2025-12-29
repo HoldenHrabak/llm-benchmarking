@@ -1,12 +1,5 @@
 # Local LLM Energy Benchmarking (M4 Max)
 
-![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
-![macOS](https://img.shields.io/badge/mac%20os-000000?style=for-the-badge&logo=apple&logoColor=white)
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)
-
-## 📋 Overview
-A software engineering tool designed to quantify the computational and energy cost of running Large Language Models (LLMs) locally on Apple Silicon.
-
 ### Key Features
 * **Real-time Energy Tracking:** Uses `zeus-apple-silicon` to measure actual hardware draw.
 * **Hardware-Specific Profiling:** Optimized for the M4 Max Unified Memory architecture.
