@@ -31,3 +31,5 @@ A software engineering tool designed to quantify the computational and energy co
 | :--- | :---: | :---: | :---: |
 | Llama-3-8B (Simulated) | 5.01 | 0.07 | 0.03 |
 | Idle Baseline | 5.00 | ~0.01 | 0.00 |
+
+| Qwen 2.5 32B | 5.01s | 174.33 J | 170.46 J | 1.937 J/Tok |
