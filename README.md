@@ -6,13 +6,12 @@
 
 ---
 
-## Benchmark Summary Table
+## Benchmark Results
 
-| Model | Efficiency (J/Tok) | Avg. Total Energy (J) | Technical Score | Primary Use Case |
-| :--- | :---: | :---: | :---: | :--- |
-| **Qwen 2.5 7B** | ~0.45 | ~295 | 3/10 | Low-latency, basic scripts |
-| **Qwen 2.5 32B** | ~2.14 | ~3823 | 10/10 | Complex math, Metal/MLX GPU optimization |
-
+| Model | Duration | Total Energy | GPU Energy | Efficiency |
+| :--- | :---: | :---: | :---: | :---: |
+| **Qwen 2.5 32B** | 68s | 2220.29 J | 2091.63 J | **2.1411 J/Tok** |
+| **Idle Baseline** | 5.00s | 0.40 J | 0.10 J | N/A |
 
 ---
 
