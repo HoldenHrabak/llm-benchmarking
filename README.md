@@ -33,3 +33,6 @@ pip install -r requirements.txt
 
 # Run Benchmark (Requires sudo for hardware sensors)
 sudo ./venv/bin/python monitor_energy.py
+
+### Energy Efficiency Results
+![Energy Efficiency Comparison](energy_comparison.png)
