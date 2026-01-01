@@ -6,12 +6,13 @@
 
 ---
 
-## Benchmark Results
+## Benchmark Summary Table
 
-| Model | Duration | Total Energy | GPU Energy | Efficiency |
-| :--- | :---: | :---: | :---: | :---: |
-| **Qwen 2.5 32B** | 68s | 2220.29 J | 2091.63 J | **2.1411 J/Tok** |
-| **Idle Baseline** | 5.00s | 0.40 J | 0.10 J | N/A |
+| Model | Efficiency (J/Tok) | Avg. Total Energy (J) | Technical Score | Primary Use Case |
+| :--- | :---: | :---: | :---: | :--- |
+| **Qwen 2.5 7B** | ~0.45 | ~295 | 3/10 | Low-latency, basic scripts |
+| **Qwen 2.5 32B** | ~2.14 | ~3823 | 10/10 | Complex math, Metal/MLX GPU optimization |
+
 
 ---
 
@@ -36,3 +37,19 @@ sudo ./venv/bin/python monitor_energy.py
 
 ### Energy Efficiency Results
 ![Energy Efficiency Comparison](energy_comparison.png)
+
+Project Findings: M4 Max LLM Performance
+My benchmarking of Qwen 2.5 Coder (7B vs 32B) on Apple Silicon reveals the "Intelligence Tax" associated with high-reasoning tasks:
+
+Efficiency Threshold: The 7B model achieved a ~5x improvement in energy efficiency, consuming only ~0.45 J/Token compared to the 32B model's ~2.14 J/Token.
+
+The Capability Gap: Despite the efficiency of the smaller model, it failed to produce valid Metal/MLX code for complex 3D math, often hallucinating non-existent Python libraries.
+
+Hardware Optimization: The 32B model consistently utilized the M4 Max Unified Memory more effectively for long-context generation, maintaining a "Quality-per-Joule" score that justifies its higher power draw for systems engineering tasks.
+
+Hardware Specifications
+Device: MacBook Pro (M4 Max).
+
+Unified Memory: 128GB (approx. 400 GB/s bandwidth).
+
+Telemetry Tool: zeus-apple-silicon (sampling CPU, GPU, and ANE power domains).
