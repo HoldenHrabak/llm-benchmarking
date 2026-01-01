@@ -1,64 +1,91 @@
 import ollama
 import time
-import sys
+import csv
+import os
+import uuid  # Used to link the two files together
 from zeus_apple_silicon import AppleEnergyMonitor
 
-# Initialize the hardware monitor
+# 1. Selection Menu
+print("--- LLM Energy Benchmark Suite ---")
+print("1) Qwen 2.5 Coder 32B")
+print("2) Qwen 2.5 Coder 7B")
+choice = input("Select model (1 or 2): ")
+
+if choice == "1":
+    MODEL = "qwen2.5-coder:32b"
+    METRIC_FILE = "benchmarks_32b.csv"
+    TEXT_FILE = "responses_32b.csv"
+else:
+    MODEL = "qwen2.5-coder:7b"
+    METRIC_FILE = "benchmarks_7b.csv"
+    TEXT_FILE = "responses_7b.csv"
+
 monitor = AppleEnergyMonitor()
 
-def run_benchmarked_query(model_name, prompt):
-    print(f"\nTarget Model: {model_name}")
-    print(f"Sending Prompt: \"{prompt[:50]}...\"")
-    print("-" * 40)
+def init_logs():
+    """Initializes both CSV files with appropriate headers."""
+    # Initialize Metrics File (Numbers Only)
+    if not os.path.exists(METRIC_FILE):
+        with open(METRIC_FILE, 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(["ID", "Timestamp", "Model", "Prompt_Snippet", "Duration(s)", "TotalEnergy(J)", "Tokens", "J/Token"])
+    
+    # Initialize Responses File (Full Text)
+    if not os.path.exists(TEXT_FILE):
+        with open(TEXT_FILE, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.writer(f, quoting=csv.QUOTE_MINIMAL)
+            writer.writerow(["ID", "Timestamp", "Model", "Full_Prompt", "Full_Response"])
 
-    try:
-        # 1. Start the hardware measurement window
-        monitor.begin_window("ai_inference")
-        start_time = time.time()
-
-        # 2. Trigger the Local LLM (Non-streaming for precise measurement)
-        # We use ollama.generate to get the usage metadata (token counts)
-        response = ollama.generate(model=model_name, prompt=prompt)
-
-        # 3. Stop the hardware measurement window
-        duration = time.time() - start_time
-        metrics = monitor.end_window("ai_inference")
-
-        # 4. Extract Energy Data (mJ to Joules)
-        total_j = (metrics.cpu_total_mj + metrics.gpu_mj + metrics.ane_mj) / 1000
-        gpu_j = metrics.gpu_mj / 1000
-
-        # 5. Extract Token Data from Ollama
-        # eval_count is the number of tokens generated
-        tokens = response.get('eval_count', 1) 
-        tps = tokens / duration if duration > 0 else 0
-
-        # 6. Calculate Efficiency
-        joules_per_token = total_j / tokens if tokens > 0 else 0
-
-        # PRINT RESULTS
-        print(f"AI Response Received ({tokens} tokens)")
-        print(f"Inference Time: {duration:.2f} seconds")
-        print(f"Speed: {tps:.2f} tokens/sec")
-        print(f"GPU Energy: {gpu_j:.2f} J")
-        print(f"Total Energy: {total_j:.2f} J")
-        print(f"Efficiency: {joules_per_token:.4f} Joules/Token")
-        print("-" * 40)
+def log_data(metric_data, text_data):
+    """Saves numbers to one file and text to another."""
+    # Write to Metric File
+    with open(METRIC_FILE, 'a', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(metric_data)
         
-        # Return the summary line for your README
-        return f"| {model_name} | {duration:.2f}s | {total_j:.2f} J | {gpu_j:.2f} J | {joules_per_token:.4f} |"
+    # Write to Text File
+    with open(TEXT_FILE, 'a', newline='', encoding='utf-8') as f:
+        writer = csv.writer(f, quoting=csv.QUOTE_MINIMAL)
+        writer.writerow(text_data)
 
-    except Exception as e:
-        print(f"Error during benchmark: {e}")
-        return None
+def start_benchmark():
+    init_logs()
+    print(f"\n🚀 Monitoring {MODEL}")
+    print(f"📊 Metrics -> {METRIC_FILE}")
+    print(f"📄 Full Text -> {TEXT_FILE}\n")
+    
+    while True:
+        prompt = input("🤖 Ask AI (type 'exit' to quit): ")
+        if prompt.lower() in ['exit', 'quit']: break
+        
+        # Generate a unique ID to link the row in the metric file to the row in the response file
+        run_id = str(uuid.uuid4())[:8] 
+        timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+
+        print("⚡ Measuring...")
+        monitor.begin_window("inference")
+        start_t = time.time()
+
+        try:
+            response = ollama.generate(model=MODEL, prompt=prompt)
+            duration = time.time() - start_t
+            metrics = monitor.end_window("inference")
+
+            total_j = (metrics.cpu_total_mj + metrics.gpu_mj + metrics.ane_mj) / 1000
+            tokens = response.get('eval_count', 1)
+            j_per_token = total_j / tokens
+
+            print(f"\n--- AI RESPONSE ---\n{response['response'][:200]}...\n")
+            print(f"📊 Stats: {total_j:.2f}J | {j_per_token:.4f} J/Tok\n")
+
+            # 1. Save numbers to METRIC_FILE
+            log_data(
+                [run_id, timestamp, MODEL, prompt[:30], f"{duration:.2f}", f"{total_j:.2f}", tokens, f"{j_per_token:.4f}"],
+                [run_id, timestamp, MODEL, prompt, response['response']]
+            )
+
+        except Exception as e:
+            print(f"❌ Error: {e}")
 
 if __name__ == "__main__":
-    # Ensure Ollama is running before starting!
-    MODEL = "qwen2.5-coder:32b"
-    TEST_PROMPT = "Write a highly optimized Python implementation of a 3D Mandelbrot fractal renderer."
-    
-    # Run the benchmark
-    summary_row = run_benchmarked_query(MODEL, TEST_PROMPT)
-    
-    if summary_row:
-        print(summary_row)
+    start_benchmark()

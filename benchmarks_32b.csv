@@ -1,0 +1,6 @@
+ID,Timestamp,Model,Prompt_Snippet,Duration(s),TotalEnergy(J),Tokens,J/Token
+478208a4,2025-12-30 20:55:49,qwen2.5-coder:32b,Write a highly optimized Pytho,121.45,3914.02,1798,2.1769
+9b9f4a4e,2025-12-31 13:47:25,qwen2.5-coder:32b,Implement a Python function th,49.14,1401.56,687,2.0401
+93f4e654,2025-12-31 18:20:50,qwen2.5-coder:32b,Write a script using the MLX f,54.09,1625.81,807,2.0146
+4a0dcf8b,2025-12-31 18:22:05,qwen2.5-coder:32b,Design a real-time high-freque,64.39,2161.45,1011,2.1379
+484a7d70,2025-12-31 18:23:23,qwen2.5-coder:32b,Write a Python script that scr,56.70,1953.82,881,2.2177

@@ -1,0 +1,7 @@
+ID,Timestamp,Model,Prompt_Snippet,Duration(s),TotalEnergy(J),Tokens,J/Token
+2b053a73,2025-12-30 20:59:31,qwen2.5-coder:7b,Write a highly optimized Pytho,28.77,566.86,1273,0.4453
+a3cca239,2025-12-31 18:26:12,qwen2.5-coder:7b,Implement a Python function th,15.77,283.22,626,0.4524
+234d20b7,2025-12-31 18:26:44,qwen2.5-coder:7b,Write a script using the MLX f,7.81,168.16,386,0.4357
+8b663505,2025-12-31 18:27:23,qwen2.5-coder:7b,Design a real-time high-freque,17.90,388.10,893,0.4346
+444b1daa,2025-12-31 18:27:47,qwen2.5-coder:7b,Here is a standard Flask API w,16.65,363.27,826,0.4398
+4196b0e8,2025-12-31 18:28:33,qwen2.5-coder:7b,Write a Python script that scr,13.33,288.17,660,0.4366
